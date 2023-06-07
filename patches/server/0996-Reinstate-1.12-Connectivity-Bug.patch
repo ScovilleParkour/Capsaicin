@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mason Hunt <masonhunt130ii@gmail.com>
+Date: Wed, 7 Jun 2023 19:18:24 +1000
+Subject: [PATCH] Reinstate 1.12 Connectivity Bug
+
+Reintroduces the bug that prevented iron bars from connecting to walls (and vice-versa).
+
+diff --git a/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java b/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
+index 83352a3909e892e35f96adea092a8c399ad98463..2ad4632b7afde1be36b0863d7bcaa71442e89262 100644
+--- a/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
+@@ -67,7 +67,7 @@ public class IronBarsBlock extends CrossCollisionBlock {
+     }
+ 
+     public final boolean attachsTo(BlockState state, boolean sideSolidFullSquare) {
+-        return !isExceptionForConnection(state) && sideSolidFullSquare || state.getBlock() instanceof IronBarsBlock || state.is(BlockTags.WALLS);
++        return (!isExceptionForConnection(state) && sideSolidFullSquare || state.getBlock() instanceof IronBarsBlock) && !(state.getBlock() instanceof WallBlock);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/WallBlock.java b/src/main/java/net/minecraft/world/level/block/WallBlock.java
+index a41aa754d50841af3f8279f163c8399ce1b5374e..a3efae34862f388b4c76e523f58cd132272730ec 100644
+--- a/src/main/java/net/minecraft/world/level/block/WallBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/WallBlock.java
+@@ -106,7 +106,7 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+     private boolean connectsTo(BlockState state, boolean faceFullSquare, Direction side) {
+         Block block = state.getBlock();
+         boolean bl = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, side);
+-        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceFullSquare || block instanceof IronBarsBlock || bl;
++        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceFullSquare || bl;
+     }
+ 
+     @Override

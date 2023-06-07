@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mason Hunt <masonhunt130ii@gmail.com>
+Date: Wed, 7 Jun 2023 19:13:47 +1000
+Subject: [PATCH] 1.12 Anvil Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/AnvilBlock.java b/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
+index 5c5a3b169795bf8a527b316c666cbc2105c66622..c61b2b1e1c54ab371ddb7574ad69155c7cac525d 100644
+--- a/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
+@@ -30,15 +30,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ 
+ public class AnvilBlock extends FallingBlock {
+     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+-    private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
+-    private static final VoxelShape X_LEG1 = Block.box(3.0D, 4.0D, 4.0D, 13.0D, 5.0D, 12.0D);
+-    private static final VoxelShape X_LEG2 = Block.box(4.0D, 5.0D, 6.0D, 12.0D, 10.0D, 10.0D);
+-    private static final VoxelShape X_TOP = Block.box(0.0D, 10.0D, 3.0D, 16.0D, 16.0D, 13.0D);
+-    private static final VoxelShape Z_LEG1 = Block.box(4.0D, 4.0D, 3.0D, 12.0D, 5.0D, 13.0D);
+-    private static final VoxelShape Z_LEG2 = Block.box(6.0D, 5.0D, 4.0D, 10.0D, 10.0D, 12.0D);
+-    private static final VoxelShape Z_TOP = Block.box(3.0D, 10.0D, 0.0D, 13.0D, 16.0D, 16.0D);
+-    private static final VoxelShape X_AXIS_AABB = Shapes.or(BASE, X_LEG1, X_LEG2, X_TOP);
+-    private static final VoxelShape Z_AXIS_AABB = Shapes.or(BASE, Z_LEG1, Z_LEG2, Z_TOP);
++    private static final VoxelShape X_AXIS_AABB = Block.box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 14.0D);
++    private static final VoxelShape Z_AXIS_AABB = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D);
+     private static final Component CONTAINER_TITLE = Component.translatable("container.repair");
+     private static final float FALL_DAMAGE_PER_DISTANCE = 2.0F;
+     private static final int FALL_DAMAGE_MAX = 40;

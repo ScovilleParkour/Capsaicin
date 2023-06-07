@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mason Hunt <masonhunt130ii@gmail.com>
+Date: Wed, 7 Jun 2023 19:14:11 +1000
+Subject: [PATCH] 1.12 End Portal Frame Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/EndPortalFrameBlock.java b/src/main/java/net/minecraft/world/level/block/EndPortalFrameBlock.java
+index 3f953bc9b6c9835f4dd5e81564f3d3cd85223c86..aa4897c4885f14934e7bf858dca9b701df9a0f80 100644
+--- a/src/main/java/net/minecraft/world/level/block/EndPortalFrameBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/EndPortalFrameBlock.java
+@@ -25,7 +25,7 @@ public class EndPortalFrameBlock extends Block {
+     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+     public static final BooleanProperty HAS_EYE = BlockStateProperties.EYE;
+     protected static final VoxelShape BASE_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 13.0D, 16.0D);
+-    protected static final VoxelShape EYE_SHAPE = Block.box(4.0D, 13.0D, 4.0D, 12.0D, 16.0D, 12.0D);
++    protected static final VoxelShape EYE_SHAPE = Block.box(5.0D, 13.0D, 5.0D, 11.0D, 16.0D, 11.0D);
+     protected static final VoxelShape FULL_SHAPE = Shapes.or(BASE_SHAPE, EYE_SHAPE);
+     private static BlockPattern portalShape;
+ 

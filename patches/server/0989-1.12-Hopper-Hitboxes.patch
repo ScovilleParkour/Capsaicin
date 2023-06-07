@@ -1,0 +1,86 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mason Hunt <masonhunt130ii@gmail.com>
+Date: Wed, 7 Jun 2023 19:13:25 +1000
+Subject: [PATCH] 1.12 Hopper Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/HopperBlock.java b/src/main/java/net/minecraft/world/level/block/HopperBlock.java
+index c8e7e82dd81d9faf8f06612291c40f541304eb82..a58d430e5a8460e3d869c739173befda7592c901 100644
+--- a/src/main/java/net/minecraft/world/level/block/HopperBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/HopperBlock.java
+@@ -36,20 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ public class HopperBlock extends BaseEntityBlock {
+     public static final DirectionProperty FACING = BlockStateProperties.FACING_HOPPER;
+     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+-    private static final VoxelShape TOP = Block.box(0.0D, 10.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+-    private static final VoxelShape FUNNEL = Block.box(4.0D, 4.0D, 4.0D, 12.0D, 10.0D, 12.0D);
+-    private static final VoxelShape CONVEX_BASE = Shapes.or(FUNNEL, TOP);
+-    private static final VoxelShape BASE = Shapes.join(CONVEX_BASE, Hopper.INSIDE, BooleanOp.ONLY_FIRST);
+-    private static final VoxelShape DOWN_SHAPE = Shapes.or(BASE, Block.box(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D));
+-    private static final VoxelShape EAST_SHAPE = Shapes.or(BASE, Block.box(12.0D, 4.0D, 6.0D, 16.0D, 8.0D, 10.0D));
+-    private static final VoxelShape NORTH_SHAPE = Shapes.or(BASE, Block.box(6.0D, 4.0D, 0.0D, 10.0D, 8.0D, 4.0D));
+-    private static final VoxelShape SOUTH_SHAPE = Shapes.or(BASE, Block.box(6.0D, 4.0D, 12.0D, 10.0D, 8.0D, 16.0D));
+-    private static final VoxelShape WEST_SHAPE = Shapes.or(BASE, Block.box(0.0D, 4.0D, 6.0D, 4.0D, 8.0D, 10.0D));
+-    private static final VoxelShape DOWN_INTERACTION_SHAPE = Hopper.INSIDE;
+-    private static final VoxelShape EAST_INTERACTION_SHAPE = Shapes.or(Hopper.INSIDE, Block.box(12.0D, 8.0D, 6.0D, 16.0D, 10.0D, 10.0D));
+-    private static final VoxelShape NORTH_INTERACTION_SHAPE = Shapes.or(Hopper.INSIDE, Block.box(6.0D, 8.0D, 0.0D, 10.0D, 10.0D, 4.0D));
+-    private static final VoxelShape SOUTH_INTERACTION_SHAPE = Shapes.or(Hopper.INSIDE, Block.box(6.0D, 8.0D, 12.0D, 10.0D, 10.0D, 16.0D));
+-    private static final VoxelShape WEST_INTERACTION_SHAPE = Shapes.or(Hopper.INSIDE, Block.box(0.0D, 8.0D, 6.0D, 4.0D, 10.0D, 10.0D));
++    private static final VoxelShape FULL_SHAPE = Shapes.join(Shapes.block(), Hopper.INSIDE, BooleanOp.ONLY_FIRST);
+ 
+     public HopperBlock(BlockBehaviour.Properties settings) {
+         super(settings);
+@@ -58,38 +45,12 @@ public class HopperBlock extends BaseEntityBlock {
+ 
+     @Override
+     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+-        switch ((Direction)state.getValue(FACING)) {
+-            case DOWN:
+-                return DOWN_SHAPE;
+-            case NORTH:
+-                return NORTH_SHAPE;
+-            case SOUTH:
+-                return SOUTH_SHAPE;
+-            case WEST:
+-                return WEST_SHAPE;
+-            case EAST:
+-                return EAST_SHAPE;
+-            default:
+-                return BASE;
+-        }
++        return FULL_SHAPE;
+     }
+ 
+     @Override
+     public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+-        switch ((Direction)state.getValue(FACING)) {
+-            case DOWN:
+-                return DOWN_INTERACTION_SHAPE;
+-            case NORTH:
+-                return NORTH_INTERACTION_SHAPE;
+-            case SOUTH:
+-                return SOUTH_INTERACTION_SHAPE;
+-            case WEST:
+-                return WEST_INTERACTION_SHAPE;
+-            case EAST:
+-                return EAST_INTERACTION_SHAPE;
+-            default:
+-                return Hopper.INSIDE;
+-        }
++        return FULL_SHAPE;
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
+index a05acf709735b40ca86f978508c63a86065fd405..420ccae713300d33455f86a559e6c80dbea4f3f7 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
+@@ -6,7 +6,7 @@ import net.minecraft.world.phys.shapes.Shapes;
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ 
+ public interface Hopper extends Container {
+-    VoxelShape INSIDE = Block.box(2.0D, 11.0D, 2.0D, 14.0D, 16.0D, 14.0D);
++    VoxelShape INSIDE = Block.box(2.0D, 10.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+     VoxelShape ABOVE = Block.box(0.0D, 16.0D, 0.0D, 16.0D, 32.0D, 16.0D);
+     VoxelShape SUCK = Shapes.or(INSIDE, ABOVE);
+ 
