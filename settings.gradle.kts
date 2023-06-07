@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "forktest"
+rootProject.name = "capsaicin"
 
-include("forktest-api", "forktest-server")
+include("capsaicin-api", "capsaicin-server")
