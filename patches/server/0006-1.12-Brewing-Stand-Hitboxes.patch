@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody <melodyunofficial@gmail.com>
+Date: Fri, 3 May 2024 11:21:10 -0400
+Subject: [PATCH] 1.12 Brewing Stand Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/BrewingStandBlock.java b/src/main/java/net/minecraft/world/level/block/BrewingStandBlock.java
+index f3b5779e7b6f47dedf44ee7c6e96587c6f1c8260..a2f1e29bc382ff8b19b111a5b99ba6f0895bed0b 100644
+--- a/src/main/java/net/minecraft/world/level/block/BrewingStandBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BrewingStandBlock.java
+@@ -33,7 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ public class BrewingStandBlock extends BaseEntityBlock {
+     public static final MapCodec<BrewingStandBlock> CODEC = simpleCodec(BrewingStandBlock::new);
+     public static final BooleanProperty[] HAS_BOTTLE = new BooleanProperty[]{BlockStateProperties.HAS_BOTTLE_0, BlockStateProperties.HAS_BOTTLE_1, BlockStateProperties.HAS_BOTTLE_2};
+-    protected static final VoxelShape SHAPE = Shapes.or(Block.box(1.0D, 0.0D, 1.0D, 15.0D, 2.0D, 15.0D), Block.box(7.0D, 0.0D, 7.0D, 9.0D, 14.0D, 9.0D));
++    protected static final VoxelShape SHAPE = Shapes.or(Block.box(0.0D, 0.0D, .0D, 16.0D, 2.0D, 16.0D), Block.box(7.0D, 0.0D, 7.0D, 9.0D, 14.0D, 9.0D));
+ 
+     @Override
+     public MapCodec<BrewingStandBlock> codec() {

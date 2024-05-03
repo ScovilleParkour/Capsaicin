@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody <melodyunofficial@gmail.com>
+Date: Fri, 3 May 2024 12:38:06 -0400
+Subject: [PATCH] 1.12 Wall/Iron Bar Connectivity
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java b/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
+index a692373638829e3e33173560b0c807fe95d621d0..b590e36d0aef21ef9d8b4c6da670d3988187e7ca 100644
+--- a/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/IronBarsBlock.java
+@@ -75,7 +75,7 @@ public class IronBarsBlock extends CrossCollisionBlock {
+     }
+ 
+     public final boolean attachsTo(BlockState state, boolean sideSolidFullSquare) {
+-        return !isExceptionForConnection(state) && sideSolidFullSquare || state.getBlock() instanceof IronBarsBlock || state.is(BlockTags.WALLS);
++        return (!isExceptionForConnection(state) && sideSolidFullSquare || state.getBlock() instanceof IronBarsBlock) && !(state.is(BlockTags.WALLS));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/WallBlock.java b/src/main/java/net/minecraft/world/level/block/WallBlock.java
+index fa3e1596596af71bb479b587c7edd592c4416e0f..4da76689f754c0712e0182ab325168326d4cd84b 100644
+--- a/src/main/java/net/minecraft/world/level/block/WallBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/WallBlock.java
+@@ -118,7 +118,7 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+     private boolean connectsTo(BlockState state, boolean faceFullSquare, Direction side) {
+         Block block = state.getBlock();
+         boolean bl = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, side);
+-        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceFullSquare || block instanceof IronBarsBlock || bl;
++        return (state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceFullSquare || bl) && !(block instanceof IronBarsBlock);
+     }
+ 
+     @Override

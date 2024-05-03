@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody <melodyunofficial@gmail.com>
+Date: Fri, 3 May 2024 11:12:05 -0400
+Subject: [PATCH] 1.12 Anvil Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/AnvilBlock.java b/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
+index 9fca247f51e8b4d445f61ab5c16faf3928626deb..0f3d8138e2470e6a4e28193958b7af661ad488d5 100644
+--- a/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/AnvilBlock.java
+@@ -32,15 +32,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ public class AnvilBlock extends FallingBlock {
+     public static final MapCodec<AnvilBlock> CODEC = simpleCodec(AnvilBlock::new);
+     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+-    private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
+-    private static final VoxelShape X_LEG1 = Block.box(3.0D, 4.0D, 4.0D, 13.0D, 5.0D, 12.0D);
+-    private static final VoxelShape X_LEG2 = Block.box(4.0D, 5.0D, 6.0D, 12.0D, 10.0D, 10.0D);
+-    private static final VoxelShape X_TOP = Block.box(0.0D, 10.0D, 3.0D, 16.0D, 16.0D, 13.0D);
+-    private static final VoxelShape Z_LEG1 = Block.box(4.0D, 4.0D, 3.0D, 12.0D, 5.0D, 13.0D);
+-    private static final VoxelShape Z_LEG2 = Block.box(6.0D, 5.0D, 4.0D, 10.0D, 10.0D, 12.0D);
+-    private static final VoxelShape Z_TOP = Block.box(3.0D, 10.0D, 0.0D, 13.0D, 16.0D, 16.0D);
+-    private static final VoxelShape X_AXIS_AABB = Shapes.or(BASE, X_LEG1, X_LEG2, X_TOP);
+-    private static final VoxelShape Z_AXIS_AABB = Shapes.or(BASE, Z_LEG1, Z_LEG2, Z_TOP);
++    private static final VoxelShape X_AXIS_AABB = Block.box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 14.0D);
++    private static final VoxelShape Z_AXIS_AABB = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D);
+     private static final Component CONTAINER_TITLE = Component.translatable("container.repair");
+     private static final float FALL_DAMAGE_PER_DISTANCE = 2.0F;
+     private static final int FALL_DAMAGE_MAX = 40;

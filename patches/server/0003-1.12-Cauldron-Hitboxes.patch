@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody <melodyunofficial@gmail.com>
+Date: Fri, 3 May 2024 11:07:52 -0400
+Subject: [PATCH] 1.12 Cauldron Hitboxes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/AbstractCauldronBlock.java b/src/main/java/net/minecraft/world/level/block/AbstractCauldronBlock.java
+index 5780d349f968ea3d05cf569b63531f8e76884827..d5211259d26448bbcfa3c53c3c9f4e4f912d3bcb 100644
+--- a/src/main/java/net/minecraft/world/level/block/AbstractCauldronBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/AbstractCauldronBlock.java
+@@ -29,8 +29,8 @@ public abstract class AbstractCauldronBlock extends Block {
+     private static final int LEG_HEIGHT = 3;
+     private static final int LEG_DEPTH = 2;
+     protected static final int FLOOR_LEVEL = 4;
+-    private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+-    protected static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), box(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), box(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), BooleanOp.ONLY_FIRST);
++    private static final VoxelShape INSIDE = box(2.0D, 5.0D, 2.0D, 14.0D, 16.0D, 14.0D);
++    protected static final VoxelShape SHAPE = Shapes.join(Shapes.block(), INSIDE, BooleanOp.ONLY_FIRST);
+     protected final CauldronInteraction.InteractionMap interactions;
+ 
+     @Override
