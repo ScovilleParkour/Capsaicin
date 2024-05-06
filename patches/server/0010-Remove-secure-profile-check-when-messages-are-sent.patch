@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody <melodyunofficial@gmail.com>
+Date: Sat, 4 May 2024 21:44:31 -0400
+Subject: [PATCH] Remove secure profile check when messages are sent
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 8b630fc4da8a7fda08c416e70c22463f04c3b6b5..4c91277d3ea0c70407f2426584c58c3733e5c9ef 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -305,7 +305,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+         UUID uuid = player.getUUID();
+ 
+         Objects.requireNonNull(server);
+-        this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(uuid, server::enforceSecureProfile);
++        this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(uuid, () -> false);
+         this.chatMessageChain = new FutureChain(server.chatExecutor); // CraftBukkit - async chat
+     }
+ 
