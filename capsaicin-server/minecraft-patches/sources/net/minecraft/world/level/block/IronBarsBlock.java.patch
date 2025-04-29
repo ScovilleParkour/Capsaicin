@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/block/IronBarsBlock.java
++++ b/net/minecraft/world/level/block/IronBarsBlock.java
+@@ -104,7 +_,7 @@
+     }
+ 
+     public final boolean attachsTo(BlockState state, boolean solidSide) {
+-        return !isExceptionForConnection(state) && solidSide || state.getBlock() instanceof IronBarsBlock || state.is(BlockTags.WALLS);
++        return (!isExceptionForConnection(state) && solidSide || state.getBlock() instanceof IronBarsBlock) && !state.is(BlockTags.WALLS);
+     }
+ 
+     @Override

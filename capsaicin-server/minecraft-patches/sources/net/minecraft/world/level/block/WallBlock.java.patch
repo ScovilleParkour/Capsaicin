@@ -138,6 +138,15 @@
      }
  
      @Override
+@@ -144,7 +_,7 @@
+     private boolean connectsTo(BlockState state, boolean sideSolid, Direction direction) {
+         Block block = state.getBlock();
+         boolean flag = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
+-        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && sideSolid || block instanceof IronBarsBlock || flag;
++        return (state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && sideSolid || flag) && !(block instanceof IronBarsBlock);
+     }
+ 
+     @Override
 @@ -262,7 +_,7 @@
                  return true;
              } else {
