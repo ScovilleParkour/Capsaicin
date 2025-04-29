@@ -1,0 +1,11 @@
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -322,7 +_,7 @@
+         this.player = player;
+         player.connection = this;
+         player.getTextFilter().join();
+-        this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(player.getUUID(), server::enforceSecureProfile);
++        this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(player.getUUID(), () -> false);
+         this.chatMessageChain = new FutureChain(server.chatExecutor); // CraftBukkit - async chat
+     }
+ 
