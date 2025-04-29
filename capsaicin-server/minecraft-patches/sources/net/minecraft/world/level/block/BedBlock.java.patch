@@ -1,0 +1,39 @@
+--- a/net/minecraft/world/level/block/BedBlock.java
++++ b/net/minecraft/world/level/block/BedBlock.java
+@@ -50,16 +_,7 @@
+     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
+     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
+     protected static final int HEIGHT = 9;
+-    protected static final VoxelShape BASE = Block.box(0.0, 3.0, 0.0, 16.0, 9.0, 16.0);
+-    private static final int LEG_WIDTH = 3;
+-    protected static final VoxelShape LEG_NORTH_WEST = Block.box(0.0, 0.0, 0.0, 3.0, 3.0, 3.0);
+-    protected static final VoxelShape LEG_SOUTH_WEST = Block.box(0.0, 0.0, 13.0, 3.0, 3.0, 16.0);
+-    protected static final VoxelShape LEG_NORTH_EAST = Block.box(13.0, 0.0, 0.0, 16.0, 3.0, 3.0);
+-    protected static final VoxelShape LEG_SOUTH_EAST = Block.box(13.0, 0.0, 13.0, 16.0, 3.0, 16.0);
+-    protected static final VoxelShape NORTH_SHAPE = Shapes.or(BASE, LEG_NORTH_WEST, LEG_NORTH_EAST);
+-    protected static final VoxelShape SOUTH_SHAPE = Shapes.or(BASE, LEG_SOUTH_WEST, LEG_SOUTH_EAST);
+-    protected static final VoxelShape WEST_SHAPE = Shapes.or(BASE, LEG_NORTH_WEST, LEG_SOUTH_WEST);
+-    protected static final VoxelShape EAST_SHAPE = Shapes.or(BASE, LEG_NORTH_EAST, LEG_SOUTH_EAST);
++    protected static final VoxelShape BASE = Block.box(0.0, 0.0, 0.0, 16.0, HEIGHT, 16.0);
+     private final DyeColor color;
+ 
+     @Override
+@@ -244,17 +_,7 @@
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        Direction opposite = getConnectedDirection(state).getOpposite();
+-        switch (opposite) {
+-            case NORTH:
+-                return NORTH_SHAPE;
+-            case SOUTH:
+-                return SOUTH_SHAPE;
+-            case WEST:
+-                return WEST_SHAPE;
+-            default:
+-                return EAST_SHAPE;
+-        }
++        return BASE;
+     }
+ 
+     public static Direction getConnectedDirection(BlockState state) {
