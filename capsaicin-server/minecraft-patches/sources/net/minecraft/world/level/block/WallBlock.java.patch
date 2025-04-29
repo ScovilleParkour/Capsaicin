@@ -1,0 +1,164 @@
+--- a/net/minecraft/world/level/block/WallBlock.java
++++ b/net/minecraft/world/level/block/WallBlock.java
+@@ -36,19 +_,42 @@
+     public static final EnumProperty<WallSide> SOUTH_WALL = BlockStateProperties.SOUTH_WALL;
+     public static final EnumProperty<WallSide> WEST_WALL = BlockStateProperties.WEST_WALL;
+     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+-    private final Map<BlockState, VoxelShape> shapeByIndex;
+-    private final Map<BlockState, VoxelShape> collisionShapeByIndex;
+-    private static final int WALL_WIDTH = 3;
+-    private static final int WALL_HEIGHT = 14;
+-    private static final int POST_WIDTH = 4;
+-    private static final int POST_COVER_WIDTH = 1;
+-    private static final int WALL_COVER_START = 7;
+-    private static final int WALL_COVER_END = 9;
+-    private static final VoxelShape POST_TEST = Block.box(7.0, 0.0, 7.0, 9.0, 16.0, 9.0);
+-    private static final VoxelShape NORTH_TEST = Block.box(7.0, 0.0, 0.0, 9.0, 16.0, 9.0);
+-    private static final VoxelShape SOUTH_TEST = Block.box(7.0, 0.0, 7.0, 9.0, 16.0, 16.0);
+-    private static final VoxelShape WEST_TEST = Block.box(0.0, 0.0, 7.0, 9.0, 16.0, 9.0);
+-    private static final VoxelShape EAST_TEST = Block.box(7.0, 0.0, 7.0, 16.0, 16.0, 9.0);
++    private static final VoxelShape[] AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 14.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 14.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
++    };
++    private static final VoxelShape[] CLIP_AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 24.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 24.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D)
++    };
+ 
+     @Override
+     public MapCodec<WallBlock> codec() {
+@@ -67,8 +_,6 @@
+                 .setValue(WEST_WALL, WallSide.NONE)
+                 .setValue(WATERLOGGED, Boolean.valueOf(false))
+         );
+-        this.shapeByIndex = this.makeShapes(4.0F, 3.0F, 16.0F, 0.0F, 14.0F, 16.0F);
+-        this.collisionShapeByIndex = this.makeShapes(4.0F, 3.0F, 24.0F, 0.0F, 24.0F, 24.0F);
+     }
+ 
+     private static VoxelShape applyWallShape(VoxelShape baseShape, WallSide height, VoxelShape lowShape, VoxelShape tallShape) {
+@@ -79,61 +_,25 @@
+         }
+     }
+ 
+-    private Map<BlockState, VoxelShape> makeShapes(float width, float depth, float wallPostHeight, float wallMinY, float wallLowHeight, float wallTallHeight) {
+-        float f = 8.0F - width;
+-        float f1 = 8.0F + width;
+-        float f2 = 8.0F - depth;
+-        float f3 = 8.0F + depth;
+-        VoxelShape voxelShape = Block.box(f, 0.0, f, f1, wallPostHeight, f1);
+-        VoxelShape voxelShape1 = Block.box(f2, wallMinY, 0.0, f3, wallLowHeight, f3);
+-        VoxelShape voxelShape2 = Block.box(f2, wallMinY, f2, f3, wallLowHeight, 16.0);
+-        VoxelShape voxelShape3 = Block.box(0.0, wallMinY, f2, f3, wallLowHeight, f3);
+-        VoxelShape voxelShape4 = Block.box(f2, wallMinY, f2, 16.0, wallLowHeight, f3);
+-        VoxelShape voxelShape5 = Block.box(f2, wallMinY, 0.0, f3, wallTallHeight, f3);
+-        VoxelShape voxelShape6 = Block.box(f2, wallMinY, f2, f3, wallTallHeight, 16.0);
+-        VoxelShape voxelShape7 = Block.box(0.0, wallMinY, f2, f3, wallTallHeight, f3);
+-        VoxelShape voxelShape8 = Block.box(f2, wallMinY, f2, 16.0, wallTallHeight, f3);
+-        Builder<BlockState, VoxelShape> builder = ImmutableMap.builder();
+-
+-        for (Boolean _boolean : UP.getPossibleValues()) {
+-            for (WallSide wallSide : EAST_WALL.getPossibleValues()) {
+-                for (WallSide wallSide1 : NORTH_WALL.getPossibleValues()) {
+-                    for (WallSide wallSide2 : WEST_WALL.getPossibleValues()) {
+-                        for (WallSide wallSide3 : SOUTH_WALL.getPossibleValues()) {
+-                            VoxelShape voxelShape9 = Shapes.empty();
+-                            voxelShape9 = applyWallShape(voxelShape9, wallSide, voxelShape4, voxelShape8);
+-                            voxelShape9 = applyWallShape(voxelShape9, wallSide2, voxelShape3, voxelShape7);
+-                            voxelShape9 = applyWallShape(voxelShape9, wallSide1, voxelShape1, voxelShape5);
+-                            voxelShape9 = applyWallShape(voxelShape9, wallSide3, voxelShape2, voxelShape6);
+-                            if (_boolean) {
+-                                voxelShape9 = Shapes.or(voxelShape9, voxelShape);
+-                            }
+-
+-                            BlockState blockState = this.defaultBlockState()
+-                                .setValue(UP, _boolean)
+-                                .setValue(EAST_WALL, wallSide)
+-                                .setValue(WEST_WALL, wallSide2)
+-                                .setValue(NORTH_WALL, wallSide1)
+-                                .setValue(SOUTH_WALL, wallSide3);
+-                            builder.put(blockState.setValue(WATERLOGGED, Boolean.valueOf(false)), voxelShape9);
+-                            builder.put(blockState.setValue(WATERLOGGED, Boolean.valueOf(true)), voxelShape9);
+-                        }
+-                    }
+-                }
+-            }
+-        }
+-
+-        return builder.build();
++    private int getIndex(BlockState state) {
++        int i = 0;
++
++        if (state.getValue(NORTH_WALL) != WallSide.NONE) i |= 1 << 2;
++        if (state.getValue(EAST_WALL) != WallSide.NONE) i |= 1 << 3;
++        if (state.getValue(SOUTH_WALL) != WallSide.NONE) i |= 1;
++        if (state.getValue(WEST_WALL) != WallSide.NONE) i |= 1 << 1;
++
++        return i;
+     }
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.shapeByIndex.get(state);
++        return AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
+     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.collisionShapeByIndex.get(state);
++        return CLIP_AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
+@@ -262,7 +_,7 @@
+                 return true;
+             } else {
+                 boolean flag6 = wallSide == WallSide.TALL && wallSide1 == WallSide.TALL || wallSide2 == WallSide.TALL && wallSide3 == WallSide.TALL;
+-                return !flag6 && (neighbour.is(BlockTags.WALL_POST_OVERRIDE) || isCovered(shape, POST_TEST));
++                return !flag6 && (neighbour.is(BlockTags.WALL_POST_OVERRIDE) || isCovered(shape, AABB_BY_INDEX[0]));
+             }
+         }
+     }
+@@ -270,10 +_,10 @@
+     private BlockState updateSides(
+         BlockState state, boolean northConnection, boolean eastConnection, boolean southConnection, boolean westConnection, VoxelShape wallShape
+     ) {
+-        return state.setValue(NORTH_WALL, this.makeWallState(northConnection, wallShape, NORTH_TEST))
+-            .setValue(EAST_WALL, this.makeWallState(eastConnection, wallShape, EAST_TEST))
+-            .setValue(SOUTH_WALL, this.makeWallState(southConnection, wallShape, SOUTH_TEST))
+-            .setValue(WEST_WALL, this.makeWallState(westConnection, wallShape, WEST_TEST));
++        return state.setValue(NORTH_WALL, this.makeWallState(northConnection, wallShape, AABB_BY_INDEX[0]))
++            .setValue(EAST_WALL, this.makeWallState(eastConnection, wallShape, AABB_BY_INDEX[8]))
++            .setValue(SOUTH_WALL, this.makeWallState(southConnection, wallShape, AABB_BY_INDEX[1]))
++            .setValue(WEST_WALL, this.makeWallState(westConnection, wallShape, AABB_BY_INDEX[2]));
+     }
+ 
+     private WallSide makeWallState(boolean allowConnection, VoxelShape shape, VoxelShape neighbourShape) {
