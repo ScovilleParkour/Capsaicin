@@ -10,7 +10,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "fork"
+rootProject.name = "capsaicin"
 
-include("fork-api")
-include("fork-server")
+include("capsaicin-api")
+include("capsaicin-server")
