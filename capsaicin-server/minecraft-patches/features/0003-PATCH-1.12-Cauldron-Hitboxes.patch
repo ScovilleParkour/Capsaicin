@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 4 Apr 2026 19:52:45 -0400
+Subject: [PATCH] [PATCH] 1.12 Cauldron Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/AbstractCauldronBlock.java b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+index f3f28ef9aad91589b2d4f70da76379fe8fedd89d..e41ba41b3cdd7ef04c593c3326748ac456a1a081 100644
+--- a/net/minecraft/world/level/block/AbstractCauldronBlock.java
++++ b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+@@ -25,18 +25,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ 
+ public abstract class AbstractCauldronBlock extends Block {
+     protected static final int FLOOR_LEVEL = 4;
+-    private static final VoxelShape SHAPE_INSIDE = Block.column(12.0, 4.0, 16.0);
+-    protected static final VoxelShape SHAPE = Util.make(
+-        () -> {
+-            int i = 4;
+-            int i1 = 3;
+-            int i2 = 2;
+-            return Shapes.join(
+-                Shapes.block(),
+-                Shapes.or(Block.column(16.0, 8.0, 0.0, 3.0), Block.column(8.0, 16.0, 0.0, 3.0), Block.column(12.0, 0.0, 3.0), SHAPE_INSIDE),
+-                BooleanOp.ONLY_FIRST
+-            );
+-        }
++    private static final VoxelShape SHAPE_INSIDE = box(2.0, 5.0, 2.0, 14.0, 16.0, 14.0);
++    protected static final VoxelShape SHAPE = Shapes.join(
++        Shapes.block(),
++        Shapes.or(box(0.0, 0.0, 4.0, 16.0, 3.0, 12.0), box(4.0, 0.0, 0.0, 12.0, 3.0, 16.0), box(2.0, 0.0, 2.0, 14.0, 3.0, 14.0), SHAPE_INSIDE),
++        SHAPE_INSIDE,
++        BooleanOp.ONLY_FIRST
+     );
+     protected final CauldronInteraction.InteractionMap interactions;
+ 
