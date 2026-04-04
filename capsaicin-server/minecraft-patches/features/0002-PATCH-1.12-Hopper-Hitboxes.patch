@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 4 Apr 2026 19:21:14 -0400
+Subject: [PATCH] [PATCH] 1.12 Hopper Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/HopperBlock.java b/net/minecraft/world/level/block/HopperBlock.java
+index 6789dd6c6f9c1683bcf0abb20319ccd6775e613c..c56aef344609d7300b3fdb4095e0911f0fdb88c8 100644
+--- a/net/minecraft/world/level/block/HopperBlock.java
++++ b/net/minecraft/world/level/block/HopperBlock.java
+@@ -41,8 +41,8 @@ public class HopperBlock extends BaseEntityBlock {
+     public static final MapCodec<HopperBlock> CODEC = simpleCodec(HopperBlock::new);
+     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING_HOPPER;
+     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+-    private final Function<BlockState, VoxelShape> shapes;
+-    private final Map<Direction, VoxelShape> interactionShapes;
++    private static final VoxelShape INSIDE = box(2.0, 10.0, 2.0, 14.0, 16.0, 14.0);
++    private static final VoxelShape SHAPE = Shapes.join(Shapes.block(), HopperBlock.INSIDE, BooleanOp.ONLY_FIRST);
+ 
+     @Override
+     public MapCodec<HopperBlock> codec() {
+@@ -69,12 +69,12 @@ public class HopperBlock extends BaseEntityBlock {
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.shapes.apply(state);
++        return this.SHAPE;
+     }
+ 
+     @Override
+     protected VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
+-        return this.interactionShapes.get(state.getValue(FACING));
++        return this.SHAPE;
+     }
+ 
+     @Override
