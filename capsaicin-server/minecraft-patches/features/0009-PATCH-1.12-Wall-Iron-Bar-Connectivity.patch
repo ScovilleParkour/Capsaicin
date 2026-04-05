@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 4 Apr 2026 20:49:03 -0400
+Subject: [PATCH] [PATCH] 1.12 Wall/Iron Bar Connectivity
+
+
+diff --git a/net/minecraft/world/level/block/IronBarsBlock.java b/net/minecraft/world/level/block/IronBarsBlock.java
+index 73b28310b710dc1ec9ecb6dcd07f5a5b5d8c606b..2243dbce7a9839226686e2c3c0fe6b4407ba96ba 100644
+--- a/net/minecraft/world/level/block/IronBarsBlock.java
++++ b/net/minecraft/world/level/block/IronBarsBlock.java
+@@ -100,7 +100,7 @@ public class IronBarsBlock extends CrossCollisionBlock {
+     }
+ 
+     public final boolean attachsTo(BlockState state, boolean solidSide) {
+-        return !isExceptionForConnection(state) && solidSide || state.getBlock() instanceof IronBarsBlock || state.is(BlockTags.WALLS);
++        return (!isExceptionForConnection(state) && solidSide || state.getBlock() instanceof IronBarsBlock) && !state.is(BlockTags.WALLS);
+     }
+ 
+     @Override
+diff --git a/net/minecraft/world/level/block/WallBlock.java b/net/minecraft/world/level/block/WallBlock.java
+index ab70032832f99ef9c1e2a9ff03222305c635eaf9..2fbb32ce43c2eac670e0b853060c1ed8ff90c821 100644
+--- a/net/minecraft/world/level/block/WallBlock.java
++++ b/net/minecraft/world/level/block/WallBlock.java
+@@ -128,7 +128,7 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+     private boolean connectsTo(BlockState state, boolean sideSolid, Direction direction) {
+         Block block = state.getBlock();
+         boolean flag = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
+-        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && sideSolid || block instanceof IronBarsBlock || flag;
++        return (state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && sideSolid || flag) && !(block instanceof IronBarsBlock);
+     }
+ 
+     @Override
