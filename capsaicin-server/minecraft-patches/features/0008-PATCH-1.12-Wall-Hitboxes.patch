@@ -1,0 +1,103 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 4 Apr 2026 20:44:30 -0400
+Subject: [PATCH] [PATCH] 1.12 Wall Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/WallBlock.java b/net/minecraft/world/level/block/WallBlock.java
+index 80246b443915dbf9668124da09c8d56f5ccd79c4..ab70032832f99ef9c1e2a9ff03222305c635eaf9 100644
+--- a/net/minecraft/world/level/block/WallBlock.java
++++ b/net/minecraft/world/level/block/WallBlock.java
+@@ -41,8 +41,42 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+         Maps.newEnumMap(Map.of(Direction.NORTH, NORTH, Direction.EAST, EAST, Direction.SOUTH, SOUTH, Direction.WEST, WEST))
+     );
+     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+-    private final Function<BlockState, VoxelShape> shapes;
+-    private final Function<BlockState, VoxelShape> collisionShapes;
++    private static final VoxelShape[] AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 14.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 14.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
++    };
++    private static final VoxelShape[] CLIP_AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 24.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 24.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D)
++    };
+     private static final VoxelShape TEST_SHAPE_POST = Block.column(2.0, 0.0, 16.0);
+     private static final Map<Direction, VoxelShape> TEST_SHAPES_WALL = Shapes.rotateHorizontal(Block.boxZ(2.0, 16.0, 0.0, 9.0));
+ 
+@@ -63,38 +97,27 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+                 .setValue(WEST, WallSide.NONE)
+                 .setValue(WATERLOGGED, false)
+         );
+-        this.shapes = this.makeShapes(16.0F, 14.0F);
+-        this.collisionShapes = this.makeShapes(24.0F, 24.0F);
+     }
+ 
+-    private Function<BlockState, VoxelShape> makeShapes(float height, float width) {
+-        VoxelShape voxelShape = Block.column(8.0, 0.0, height);
+-        int i = 6;
+-        Map<Direction, VoxelShape> map = Shapes.rotateHorizontal(Block.boxZ(6.0, 0.0, width, 0.0, 11.0));
+-        Map<Direction, VoxelShape> map1 = Shapes.rotateHorizontal(Block.boxZ(6.0, 0.0, height, 0.0, 11.0));
+-        return this.getShapeForEachState(state -> {
+-            VoxelShape voxelShape1 = state.getValue(UP) ? voxelShape : Shapes.empty();
++    private int getIndex(BlockState state) {
++        int i = 0;
+ 
+-            for (Entry<Direction, EnumProperty<WallSide>> entry : PROPERTY_BY_DIRECTION.entrySet()) {
+-                voxelShape1 = Shapes.or(voxelShape1, switch ((WallSide)state.getValue(entry.getValue())) {
+-                    case NONE -> Shapes.empty();
+-                    case LOW -> (VoxelShape)map.get(entry.getKey());
+-                    case TALL -> (VoxelShape)map1.get(entry.getKey());
+-                });
+-            }
++        if (state.getValue(NORTH) != WallSide.NONE) i |= 1 << 2;
++        if (state.getValue(EAST) != WallSide.NONE) i |= 1 << 3;
++        if (state.getValue(SOUTH) != WallSide.NONE) i |= 1;
++        if (state.getValue(WEST) != WallSide.NONE) i |= 1 << 1;
+ 
+-            return voxelShape1;
+-        }, WATERLOGGED);
++        return i;
+     }
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.shapes.apply(state);
++        return AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
+     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.collisionShapes.apply(state);
++        return CLIP_AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
