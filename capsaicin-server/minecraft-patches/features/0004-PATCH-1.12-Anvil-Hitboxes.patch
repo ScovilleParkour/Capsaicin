@@ -1,0 +1,74 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 4 Apr 2026 20:28:48 -0400
+Subject: [PATCH] [PATCH] 1.12 Anvil Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/AbstractCauldronBlock.java b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+index e41ba41b3cdd7ef04c593c3326748ac456a1a081..ea1fa47b46b4faffc3d2f9314bcda954f6849486 100644
+--- a/net/minecraft/world/level/block/AbstractCauldronBlock.java
++++ b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+@@ -28,7 +28,6 @@ public abstract class AbstractCauldronBlock extends Block {
+     private static final VoxelShape SHAPE_INSIDE = box(2.0, 5.0, 2.0, 14.0, 16.0, 14.0);
+     protected static final VoxelShape SHAPE = Shapes.join(
+         Shapes.block(),
+-        Shapes.or(box(0.0, 0.0, 4.0, 16.0, 3.0, 12.0), box(4.0, 0.0, 0.0, 12.0, 3.0, 16.0), box(2.0, 0.0, 2.0, 14.0, 3.0, 14.0), SHAPE_INSIDE),
+         SHAPE_INSIDE,
+         BooleanOp.ONLY_FIRST
+     );
+diff --git a/net/minecraft/world/level/block/AnvilBlock.java b/net/minecraft/world/level/block/AnvilBlock.java
+index bfcf55cf52b468fbb3fe60daae1068b6e54524a2..ac8f42af73691a1f2414f6de7fe38d4ca47d2d33 100644
+--- a/net/minecraft/world/level/block/AnvilBlock.java
++++ b/net/minecraft/world/level/block/AnvilBlock.java
+@@ -32,9 +32,8 @@ import org.jspecify.annotations.Nullable;
+ public class AnvilBlock extends FallingBlock {
+     public static final MapCodec<AnvilBlock> CODEC = simpleCodec(AnvilBlock::new);
+     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+-    private static final Map<Direction.Axis, VoxelShape> SHAPES = Shapes.rotateHorizontalAxis(
+-        Shapes.or(Block.column(12.0, 0.0, 4.0), Block.column(8.0, 10.0, 4.0, 5.0), Block.column(4.0, 8.0, 5.0, 10.0), Block.column(10.0, 16.0, 10.0, 16.0))
+-    );
++    private static final VoxelShape X_AXIS_AABB = Block.box(0.0, 0.0, 2.0, 16.0, 16.0, 14.0);
++    private static final VoxelShape Z_AXIS_AABB = Block.box(2.0, 0.0, 0.0, 14.0, 16.0, 14.0);
+     private static final Component CONTAINER_TITLE = Component.translatable("container.repair");
+     private static final float FALL_DAMAGE_PER_DISTANCE = 2.0F;
+     private static final int FALL_DAMAGE_MAX = 40;
+@@ -74,7 +73,7 @@ public class AnvilBlock extends FallingBlock {
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return SHAPES.get(state.getValue(FACING).getAxis());
++        return state.getValue(FACING).getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
+     }
+ 
+     @Override
+diff --git a/net/minecraft/world/level/block/HopperBlock.java b/net/minecraft/world/level/block/HopperBlock.java
+index c56aef344609d7300b3fdb4095e0911f0fdb88c8..f5b69e0c65354de0a168d0dc714dd3a07fc20066 100644
+--- a/net/minecraft/world/level/block/HopperBlock.java
++++ b/net/minecraft/world/level/block/HopperBlock.java
+@@ -53,11 +53,6 @@ public class HopperBlock extends BaseEntityBlock {
+         super(properties);
+         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, true));
+         VoxelShape voxelShape = Block.column(12.0, 11.0, 16.0);
+-        this.shapes = this.makeShapes(voxelShape);
+-        this.interactionShapes = ImmutableMap.<Direction, VoxelShape>builderWithExpectedSize(5)
+-            .putAll(Shapes.rotateHorizontal(Shapes.or(voxelShape, Block.boxZ(4.0, 8.0, 10.0, 0.0, 4.0))))
+-            .put(Direction.DOWN, voxelShape)
+-            .build();
+     }
+ 
+     private Function<BlockState, VoxelShape> makeShapes(VoxelShape shape) {
+@@ -69,12 +64,12 @@ public class HopperBlock extends BaseEntityBlock {
+ 
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+-        return this.SHAPE;
++        return SHAPE;
+     }
+ 
+     @Override
+     protected VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
+-        return this.SHAPE;
++        return SHAPE;
+     }
+ 
+     @Override
