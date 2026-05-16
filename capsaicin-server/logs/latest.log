@@ -1,0 +1,14 @@
+[17:51:53] [main/INFO]: Found new data pack paper, loading it automatically
+[17:51:54] [Worker-Main-2/INFO]: Loaded 1470 recipes
+[17:51:54] [Worker-Main-2/INFO]: Loaded 1584 advancements
+[17:51:54] [main/INFO]: [STDOUT]: Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+[17:51:54] [Attach Listener/INFO]: [STDERR]: WARNING: A Java agent has been loaded dynamically (C:\Users\melod\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.15.3\e619d89ed41a6cedc23bee3549cec8c4ffdaee7b\byte-buddy-agent-1.15.3.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[17:51:54] [main/INFO]: [STDOUT]: Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+[17:51:55] [main/INFO]: [MoonriseCommon] Paper is using 4 worker threads, 1 I/O threads
+[17:51:55] [main/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+[17:51:59] [main/WARN]: [org.bukkit.craftbukkit.legacy.CraftLegacy] Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!
+[17:52:11] [main/INFO]: [ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry] Initialising converters for DataConverter...
+[17:52:11] [main/INFO]: [ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry] Finished initialising converters for DataConverter in 354.6ms

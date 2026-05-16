@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Sat, 16 May 2026 13:19:40 -0400
+Subject: [PATCH] Maybe fixed player stuff?
+
+
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 371e396e951450dc670218029700c7df570151e9..9889c4c6a73642f4d907fc738c8d56c743acdcba 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -246,6 +246,11 @@ public abstract class Player extends Avatar implements ContainerUser {
+     @Override
+     public void tick() {
+         this.noPhysics = true;
++
++        if (!this.level().isClientSide() && this.getDeltaMovement().y < 0) {
++            this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
++        }
++
+         if (this.isSpectator() || this.isPassenger()) {
+             this.setOnGround(false);
+         }
