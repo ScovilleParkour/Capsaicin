@@ -1,0 +1,125 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:53:21 -0400
+Subject: [PATCH] [PATCH] 1.12 Wall Patches
+
+
+diff --git a/net/minecraft/world/level/block/IronBarsBlock.java b/net/minecraft/world/level/block/IronBarsBlock.java
+index d7786b167df6bf26002f544b43622b50afeed93c..b22bda83f1bff8ad28b87e1d0ed30f5ced3169c5 100644
+--- a/net/minecraft/world/level/block/IronBarsBlock.java
++++ b/net/minecraft/world/level/block/IronBarsBlock.java
+@@ -99,7 +99,7 @@ public class IronBarsBlock extends CrossCollisionBlock {
+     }
+ 
+     public final boolean attachsTo(final BlockState state, final boolean faceSolid) {
+-        return !isExceptionForConnection(state) && faceSolid || state.getBlock() instanceof IronBarsBlock || state.is(BlockTags.WALLS);
++        return (!isExceptionForConnection(state) && faceSolid || state.getBlock() instanceof IronBarsBlock) && !state.is(BlockTags.WALLS);
+     }
+ 
+     @Override
+diff --git a/net/minecraft/world/level/block/WallBlock.java b/net/minecraft/world/level/block/WallBlock.java
+index af9dc8d693e165076f3b7836ed4518278a8473cb..1d6389efc32fabda610ff74d374b32887695207d 100644
+--- a/net/minecraft/world/level/block/WallBlock.java
++++ b/net/minecraft/world/level/block/WallBlock.java
+@@ -41,8 +41,42 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+         Maps.newEnumMap(Map.of(Direction.NORTH, NORTH, Direction.EAST, EAST, Direction.SOUTH, SOUTH, Direction.WEST, WEST))
+     );
+     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+-    private final Function<BlockState, VoxelShape> shapes;
+-    private final Function<BlockState, VoxelShape> collisionShapes;
++    private static final VoxelShape[] AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 16.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 14.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 14.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
++    };
++    private static final VoxelShape[] CLIP_AABB_BY_INDEX = new VoxelShape[]{
++            /* */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* S */ Block.box(4.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* W */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 12.0D),
++            /* SW */ Block.box(0.0D, 0.0D, 4.0D, 12.0D, 24.0D, 16.0D),
++            /* N */ Block.box(4.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NS */ Block.box(5.0D, 0.0D, 0.0D, 11.0D, 24.0D, 16.0D),
++            /* NW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 12.0D),
++            /* NSW */ Block.box(0.0D, 0.0D, 0.0D, 12.0D, 24.0D, 16.0D),
++            /* E */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 12.0D),
++            /* SE */ Block.box(4.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* EW */ Block.box(0.0D, 0.0D, 5.0D, 16.0D, 24.0D, 11.0D),
++            /* SEW */ Block.box(0.0D, 0.0D, 4.0D, 16.0D, 24.0D, 16.0D),
++            /* NE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSE */ Block.box(4.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D),
++            /* NEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 12.0D),
++            /* NSEW */ Block.box(0.0D, 0.0D, 0.0D, 16.0D, 24.0D, 16.0D)
++    };
+     private static final VoxelShape TEST_SHAPE_POST = Block.column(2.0, 0.0, 16.0);
+     private static final Map<Direction, VoxelShape> TEST_SHAPES_WALL = Shapes.rotateHorizontal(Block.boxZ(2.0, 16.0, 0.0, 9.0));
+ 
+@@ -63,38 +97,27 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+                 .setValue(WEST, WallSide.NONE)
+                 .setValue(WATERLOGGED, false)
+         );
+-        this.shapes = this.makeShapes(16.0F, 14.0F);
+-        this.collisionShapes = this.makeShapes(24.0F, 24.0F);
+     }
+ 
+-    private Function<BlockState, VoxelShape> makeShapes(final float postHeight, final float wallTop) {
+-        VoxelShape post = Block.column(8.0, 0.0, postHeight);
+-        int width = 6;
+-        Map<Direction, VoxelShape> low = Shapes.rotateHorizontal(Block.boxZ(6.0, 0.0, wallTop, 0.0, 11.0));
+-        Map<Direction, VoxelShape> tall = Shapes.rotateHorizontal(Block.boxZ(6.0, 0.0, postHeight, 0.0, 11.0));
+-        return this.getShapeForEachState(state -> {
+-            VoxelShape shape = state.getValue(UP) ? post : Shapes.empty();
++    private int getIndex(BlockState state) {
++        int i = 0;
+ 
+-            for (Entry<Direction, EnumProperty<WallSide>> entry : PROPERTY_BY_DIRECTION.entrySet()) {
+-                shape = Shapes.or(shape, switch ((WallSide)state.getValue(entry.getValue())) {
+-                    case NONE -> Shapes.empty();
+-                    case LOW -> (VoxelShape)low.get(entry.getKey());
+-                    case TALL -> (VoxelShape)tall.get(entry.getKey());
+-                });
+-            }
++        if (state.getValue(NORTH) != WallSide.NONE) i |= 1 << 2;
++        if (state.getValue(EAST) != WallSide.NONE) i |= 1 << 3;
++        if (state.getValue(SOUTH) != WallSide.NONE) i |= 1;
++        if (state.getValue(WEST) != WallSide.NONE) i |= 1 << 1;
+ 
+-            return shape;
+-        }, WATERLOGGED);
++        return i;
+     }
+ 
+     @Override
+     protected VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+-        return this.shapes.apply(state);
++        return AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
+     protected VoxelShape getCollisionShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+-        return this.collisionShapes.apply(state);
++        return CLIP_AABB_BY_INDEX[getIndex(state)];
+     }
+ 
+     @Override
+@@ -105,7 +128,7 @@ public class WallBlock extends Block implements SimpleWaterloggedBlock {
+     private boolean connectsTo(final BlockState state, final boolean faceSolid, final Direction direction) {
+         Block block = state.getBlock();
+         boolean connectedFenceGate = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
+-        return state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceSolid || block instanceof IronBarsBlock || connectedFenceGate;
++        return (state.is(BlockTags.WALLS) || !isExceptionForConnection(state) && faceSolid || connectedFenceGate) && !(block instanceof IronBarsBlock);
+     }
+ 
+     @Override
