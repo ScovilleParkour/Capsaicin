@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:48:20 -0400
+Subject: [PATCH] [PATCH] 1.12 End Portal Frame Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/EndPortalFrameBlock.java b/net/minecraft/world/level/block/EndPortalFrameBlock.java
+index 112461925bb1aa06aa7a2d5c099aa123ebcedf38..2f765e628a6640dca2923785e681831260b9991a 100644
+--- a/net/minecraft/world/level/block/EndPortalFrameBlock.java
++++ b/net/minecraft/world/level/block/EndPortalFrameBlock.java
+@@ -27,8 +27,9 @@ public class EndPortalFrameBlock extends Block {
+     public static final MapCodec<EndPortalFrameBlock> CODEC = simpleCodec(EndPortalFrameBlock::new);
+     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+     public static final BooleanProperty HAS_EYE = BlockStateProperties.EYE;
+-    private static final VoxelShape SHAPE_EMPTY = Block.column(16.0, 0.0, 13.0);
+-    private static final VoxelShape SHAPE_FULL = Shapes.or(SHAPE_EMPTY, Block.column(8.0, 13.0, 16.0));
++    protected static final VoxelShape BASE_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 13.0, 16.0);
++    protected static final VoxelShape EYE_SHAPE = Block.box(5.0, 13.0, 5.0, 11.0, 16.0, 11.0);
++    protected static final VoxelShape FULL_SHAPE = Shapes.or(BASE_SHAPE, EYE_SHAPE);
+     private static @Nullable BlockPattern portalShape;
+ 
+     @Override
+@@ -48,7 +49,7 @@ public class EndPortalFrameBlock extends Block {
+ 
+     @Override
+     protected VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+-        return state.getValue(HAS_EYE) ? SHAPE_FULL : SHAPE_EMPTY;
++        return state.getValue(HAS_EYE) ? FULL_SHAPE : BASE_SHAPE;
+     }
+ 
+     @Override
