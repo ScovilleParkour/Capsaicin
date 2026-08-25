@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:44:45 -0400
+Subject: [PATCH] [PATCH] 1.12 Brewing Stand Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/BrewingStandBlock.java b/net/minecraft/world/level/block/BrewingStandBlock.java
+index 5f14be7cd9abe30292c4c6c614d048cd1e0a9c1f..f67c95dbc1e9977f4720e697fa89e320eaa5ab30 100644
+--- a/net/minecraft/world/level/block/BrewingStandBlock.java
++++ b/net/minecraft/world/level/block/BrewingStandBlock.java
+@@ -35,7 +35,7 @@ public class BrewingStandBlock extends BaseEntityBlock {
+     public static final BooleanProperty[] HAS_BOTTLE = new BooleanProperty[]{
+         BlockStateProperties.HAS_BOTTLE_0, BlockStateProperties.HAS_BOTTLE_1, BlockStateProperties.HAS_BOTTLE_2
+     };
+-    private static final VoxelShape SHAPE = Shapes.or(Block.column(2.0, 2.0, 14.0), Block.column(14.0, 0.0, 2.0));
++    protected static final VoxelShape SHAPE = Shapes.or(Block.box(0.0, 0.0, 0.0, 16.0, 2.0, 16.0), Block.box(7.0, 0.0, 7.0, 9.0, 14.0, 9.0));
+ 
+     @Override
+     public MapCodec<BrewingStandBlock> codec() {
