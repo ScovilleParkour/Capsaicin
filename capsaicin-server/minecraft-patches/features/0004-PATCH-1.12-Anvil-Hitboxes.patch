@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:40:39 -0400
+Subject: [PATCH] [PATCH] 1.12 Anvil Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/AbstractCauldronBlock.java b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+index 3631bbcecc1854bd9f0c4f1c7ff5ef1d10830d24..de8f619956eb51f505d1eee9b7679e055b712bcf 100644
+--- a/net/minecraft/world/level/block/AbstractCauldronBlock.java
++++ b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+@@ -28,7 +28,7 @@ public abstract class AbstractCauldronBlock extends Block {
+     private static final VoxelShape SHAPE_INSIDE = box(2.0, 5.0, 2.0, 14.0, 16.0, 14.0);
+     protected static final VoxelShape SHAPE = Shapes.join(
+             Shapes.block(),
+-            Shapes.or(box(0.0, 0.0, 4.0, 16.0, 3.0, 12.0), box(4.0, 0.0, 0.0, 12.0, 3.0, 16.0), box(2.0, 0.0, 2.0, 14.0, 3.0, 14.0), SHAPE_INSIDE),
++            SHAPE_INSIDE,
+             BooleanOp.ONLY_FIRST
+     );
+     protected final CauldronInteraction.Dispatcher interactions;
+diff --git a/net/minecraft/world/level/block/AnvilBlock.java b/net/minecraft/world/level/block/AnvilBlock.java
+index 2d6f13e5ab8e84b574c83e5c11646bff0d50b313..7f5656f2c9be34f192ad6c26880bab6d398912d8 100644
+--- a/net/minecraft/world/level/block/AnvilBlock.java
++++ b/net/minecraft/world/level/block/AnvilBlock.java
+@@ -32,9 +32,8 @@ import org.jspecify.annotations.Nullable;
+ public class AnvilBlock extends FallingBlock {
+     public static final MapCodec<AnvilBlock> CODEC = simpleCodec(AnvilBlock::new);
+     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+-    private static final Map<Direction.Axis, VoxelShape> SHAPES = Shapes.rotateHorizontalAxis(
+-        Shapes.or(Block.column(12.0, 0.0, 4.0), Block.column(8.0, 10.0, 4.0, 5.0), Block.column(4.0, 8.0, 5.0, 10.0), Block.column(10.0, 16.0, 10.0, 16.0))
+-    );
++    private static final VoxelShape X_AXIS_AABB = Block.box(0.0, 0.0, 2.0, 16.0, 16.0, 14.0);
++    private static final VoxelShape Z_AXIS_AABB = Block.box(2.0, 0.0, 0.0, 14.0, 16.0, 14.0);
+     private static final Component CONTAINER_TITLE = Component.translatable("container.repair");
+     private static final float FALL_DAMAGE_PER_DISTANCE = 2.0F;
+     private static final int FALL_DAMAGE_MAX = 40;
+@@ -76,7 +75,7 @@ public class AnvilBlock extends FallingBlock {
+ 
+     @Override
+     protected VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+-        return SHAPES.get(state.getValue(FACING).getAxis());
++        return state.getValue(FACING).getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
+     }
+ 
+     @Override
