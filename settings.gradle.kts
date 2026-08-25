@@ -9,9 +9,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "fork"
+rootProject.name = "capsaicin"
 
-for (name in listOf("fork-api", "fork-server")) {
+for (name in listOf("capsaicin-api", "capsaicin-server")) {
     include(name)
     file(name).mkdirs()
 }
