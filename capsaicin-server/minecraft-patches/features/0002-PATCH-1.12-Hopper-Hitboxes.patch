@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:17:31 -0400
+Subject: [PATCH] [PATCH] 1.12 Hopper Hitboxes
+
+
+diff --git a/net/minecraft/world/level/block/HopperBlock.java b/net/minecraft/world/level/block/HopperBlock.java
+index 3932da81757ea0ab7a41617165f5b64dc44ea3eb..0d698a16a5394b33ab0bfed4ab2e62b91ef2f5bd 100644
+--- a/net/minecraft/world/level/block/HopperBlock.java
++++ b/net/minecraft/world/level/block/HopperBlock.java
+@@ -42,8 +42,8 @@ public class HopperBlock extends BaseEntityBlock {
+     public static final MapCodec<HopperBlock> CODEC = simpleCodec(HopperBlock::new);
+     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING_HOPPER;
+     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+-    private final Function<BlockState, VoxelShape> shapes;
+-    private final Map<Direction, VoxelShape> interactionShapes;
++    private static final VoxelShape INSIDE = box(2.0, 10.0, 2.0, 14.0, 16.0, 14.0);
++    private static final VoxelShape SHAPE = Shapes.join(Shapes.block(), HopperBlock.INSIDE, BooleanOp.ONLY_FIRST);
+ 
+     @Override
+     public MapCodec<HopperBlock> codec() {
+@@ -54,11 +54,6 @@ public class HopperBlock extends BaseEntityBlock {
+         super(properties);
+         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, true));
+         VoxelShape inside = Block.column(12.0, 11.0, 16.0);
+-        this.shapes = this.makeShapes(inside);
+-        this.interactionShapes = ImmutableMap.<Direction, VoxelShape>builderWithExpectedSize(5)
+-            .putAll(Shapes.rotateHorizontal(Shapes.or(inside, Block.boxZ(4.0, 8.0, 10.0, 0.0, 4.0))))
+-            .put(Direction.DOWN, inside)
+-            .build();
+     }
+ 
+     private Function<BlockState, VoxelShape> makeShapes(final VoxelShape inside) {
+@@ -72,12 +67,12 @@ public class HopperBlock extends BaseEntityBlock {
+ 
+     @Override
+     protected VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+-        return this.shapes.apply(state);
++        return SHAPE;
+     }
+ 
+     @Override
+     protected VoxelShape getInteractionShape(final BlockState state, final BlockGetter level, final BlockPos pos) {
+-        return this.interactionShapes.get(state.getValue(FACING));
++        return SHAPE;
+     }
+ 
+     @Override
