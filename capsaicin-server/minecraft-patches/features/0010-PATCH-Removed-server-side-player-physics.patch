@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Melody Belle <melody@meluhdy.dev>
+Date: Mon, 24 Aug 2026 22:58:55 -0400
+Subject: [PATCH] [PATCH] Removed server-side player physics
+
+
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 5d4b3ed09fe10f545d0720b2919f0d6c822d5196..0fd481d17fe932084c81bf597c88d00f5467cbad 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -243,7 +243,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+ 
+     @Override
+     public void tick() {
+-        this.noPhysics = this.isSpectator();
++        this.noPhysics = true;
+         if (this.isSpectator() || this.isPassenger()) {
+             this.setOnGround(false);
+         }
